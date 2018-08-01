@@ -9,9 +9,23 @@
 
 import codecs	#import codecs
 import re	#import re for search
+import os.path
+from os import walk
 
-styles = ["styles.css"]	#Load css files path
-files = ["index.html"]	#Load html files path
+styles = []	#List of css files path
+files = []	#List of html files path
+
+print("- CSS Deprecator Tool -")
+print("\nListing files")
+
+for dirpath, dirnames, filenames in walk("./"):
+	for i in filenames:
+		filename, ext = os.path.splitext(i)
+		if ext == ".html":
+			files.extend( [(dirpath+'/'+i).replace("//","/")] )
+		elif ext == ".css":
+			styles.extend( [(dirpath+'/'+i).replace("//","/")] )
+print("\n-----------------------\n")
 
 objs = []
 css = []
@@ -41,12 +55,12 @@ def getHTMLObjs(file):
 	ids = re.findall('id="(.*?)"', file)	#Get Ids
 	if ids:
 		for i in ids:
-			ids_final = ids_final + i.split(" ")
+			ids_final.extend(i.split(" "))
 
 	classes = re.findall('class="(.*?)"', file)	#Get Classes
         if classes:
 		for i in classes:
-			classes_final = classes_final + i.split(" ")
+			classes_final.extend(i.split(" "))
 
 	for i, val in enumerate(ids_final):
 		ids_final[i] = "#"+val
@@ -59,23 +73,19 @@ def getHTMLObjs(file):
 
 for i in styles:
     f = codecs.open(i, "r", "utf-8")
-    css = css + getCSSObjs(style = f.read())
+    css.extend(getCSSObjs(style = f.read()))
 print("CSS Elements:")
 print(css)
 
 for i in files:
     f = codecs.open(i, "r", "utf-8")
-    objs = objs + getHTMLObjs(file = f.read())
-print("HTML Elements:")
+    objs.extend(getHTMLObjs(file = f.read()))
+print("\nHTML Elements:")
 print(objs)
-
-print("\n-----------------------\n")
-print("Elements count:\n")
 
 not_found = []
 
 for element in css:
-	print(element)
 	if element not in objs:
 		not_found.append(element)
 
