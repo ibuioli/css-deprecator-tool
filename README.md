@@ -10,7 +10,5 @@ Go to the directory, then run the command:
 
 Compatible with Angular
 
-TODO: Support for Comments
-
 ---
 Contact: ibuioli@gmail.com

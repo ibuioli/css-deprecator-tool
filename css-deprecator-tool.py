@@ -9,8 +9,8 @@
 
 import codecs	#import codecs
 import re	#import re for search
-import os.path
-from os import walk
+import os.path	#import os.path
+from os import walk	#import walk from os
 
 styles = []	#List of css files path
 files = []	#List of html files path
@@ -21,7 +21,7 @@ print("\nListing files")
 for dirpath, dirnames, filenames in walk("./"):
 	for i in filenames:
 		filename, ext = os.path.splitext(i)
-		if ext == ".html":
+		if ext == ".html" or ext == ".xml":
 			files.extend( [(dirpath+'/'+i).replace("//","/")] )
 		elif ext == ".css":
 			styles.extend( [(dirpath+'/'+i).replace("//","/")] )
@@ -31,7 +31,8 @@ objs = []
 css = []
 
 def getCSSObjs(style):
-	cleanFile = re.sub(r'[\,\>\<\+\:]',' ', style)
+	cleanCom = re.sub(r'\*[\s\S]+?\*','', style)
+	cleanFile = re.sub(r'[\,\>\<\+\:]',' ', cleanCom)
 	cleanNL = " ".join(cleanFile.split("\n"))
 	cleanStyle = re.sub('\s+',' ', cleanNL)
 	splitProp = cleanStyle.replace('}','}\n')
